@@ -15,21 +15,9 @@ body{
   justify-content:center;
   align-items:center;
 
-  font-family: system-ui, "Segoe UI", Tahoma, Arial, sans-serif;
-
+  font-family: system-ui, Arial, sans-serif;
   color:white;
   background:#050505;
-}
-
-/* background */
-body::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  background: radial-gradient(circle at center,
-    rgba(255,255,255,0.05),
-    transparent 65%);
-  pointer-events:none;
 }
 
 .heartbeat-bg{
@@ -56,44 +44,29 @@ body::before{
   text-align:center;
 }
 
-/* English area */
 #text{
   height:60vh;
   display:flex;
   justify-content:center;
   align-items:center;
-
   font-size:18px;
   line-height:2.2;
-  color:rgba(255,255,255,0.9);
-
-  overflow:hidden;
 }
 
-/* Arabic FIXED */
 #special{
   font-size:58px;
-  margin-top:18px;
   opacity:0;
-  transition:1.6s ease;
-
-  font-family: "Tahoma", "Arial", "Segoe UI", sans-serif;
-  direction: rtl;
-  unicode-bidi: plaintext;
+  transition:1.5s ease;
+  font-family: Tahoma, Arial, sans-serif;
 }
 
 #final{
-  margin-top:18px;
+  margin-top:20px;
   font-size:15px;
   opacity:0;
-  color:rgba(255,255,255,0.6);
-  line-height:1.9;
   transition:2s ease;
-
-  font-family: system-ui, Arial, sans-serif;
 }
 
-/* glitch */
 .glitch{
   animation:glitch .25s;
 }
@@ -113,10 +86,7 @@ body::before{
 
 <div class="container">
   <div id="text"></div>
-
-  <!-- Arabic isolated -->
   <div id="special"> </div>
-
   <div id="final"></div>
 </div>
 
@@ -130,18 +100,17 @@ const intro = [
 "eat properly...",
 "rest more...",
 "please stop being so hard on yourself...",
-"",
 "you really need to—"
 ];
 
 const middle = [
 "and somehow...",
 "that was the only part I couldn’t move past.",
-"",
 "and honestly, I got a bit lost in my words after that...",
-"",
 "not because I was ignoring anything you said...",
-"but because that single phrase—"
+"but because that single phrase—",
+" ",
+"it didn’t feel like a word… it felt like interruption."
 ];
 
 const finalLines = [
@@ -154,10 +123,18 @@ function delay(ms){
   return new Promise(r => setTimeout(r, ms));
 }
 
+/*  FIX: Arabic is rendered as full line */
 async function showLines(lines, speed=30){
 
   for(let line of lines){
+
     textEl.innerHTML = "";
+
+    if (/[\u0600-\u06FF]/.test(line)) {
+      textEl.innerHTML = line; // Arabic safe render
+      await delay(900);
+      continue;
+    }
 
     for(let char of line){
       textEl.innerHTML += char;
@@ -170,22 +147,24 @@ async function showLines(lines, speed=30){
 
 async function start(){
 
-  await showLines(intro, 28);
+  for(let line of intro){
+    textEl.innerHTML = line;
+    await delay(800);
+  }
 
   document.body.classList.add("glitch");
   await delay(800);
+
+  for(let line of middle){
+    textEl.innerHTML = line;
+    await delay(800);
+  }
 
   textEl.innerHTML = "";
 
   specialEl.style.opacity = 1;
 
   await delay(1200);
-
-  await showLines(middle, 26);
-
-  textEl.innerHTML = "";
-
-  finalEl.style.opacity = 1;
 
   for(let line of finalLines){
     finalEl.innerHTML += line + "<br/>";
