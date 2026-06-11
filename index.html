@@ -15,90 +15,39 @@ body{
   justify-content:center;
   align-items:center;
 
-  font-family: "Segoe UI", Tahoma, Arial, sans-serif;
-  color:white;
+  font-family: Arial, sans-serif;
   background:#050505;
-}
-
-/* soft glow background */
-body::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  background: radial-gradient(circle at center,
-    rgba(255,255,255,0.05),
-    transparent 65%);
-  pointer-events:none;
-}
-
-.heartbeat-bg{
-  position:absolute;
-  inset:-40%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255,255,255,0.015),
-    transparent
-  );
-  animation:move 14s linear infinite;
-  transform:rotate(8deg);
-}
-
-@keyframes move{
-  from{transform:translateX(-30%) rotate(8deg)}
-  to{transform:translateX(30%) rotate(8deg)}
+  color:white;
 }
 
 .container{
-  width:72%;
-  max-width:800px;
   text-align:center;
 }
 
-/* main text */
+/* English */
 #text{
-  height:60vh;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-
   font-size:18px;
-  line-height:2.2;
-  color:rgba(255,255,255,0.9);
-  overflow:hidden;
+  min-height:100px;
 }
 
-/* fixed Arabic word */
+/*  FORCE SHOW ARABIC */
 #special{
-  font-size:58px;
-  margin-top:18px;
-  opacity:0;
-  transition:1.6s ease;
+  font-size:60px;
+  margin-top:20px;
 
-  font-family: "Segoe UI", Tahoma, Arial, sans-serif;
-  direction: rtl;
-  unicode-bidi: plaintext;
+  color:white;
+
+  /*   */
+  display:block !important;
+  visibility:visible !important;
+  opacity:1 !important;
 }
 
-/* final text */
+/* final */
 #final{
-  margin-top:18px;
-  font-size:15px;
-  opacity:0;
-  color:rgba(255,255,255,0.6);
-  line-height:1.9;
-  transition:2s ease;
-}
-
-/* glitch */
-.glitch{
-  animation:glitch .25s;
-}
-
-@keyframes glitch{
-  0%{transform:translate(0)}
-  50%{transform:translate(0.6px,0)}
-  100%{transform:translate(0)}
+  margin-top:20px;
+  font-size:14px;
+  opacity:1;
 }
 
 </style>
@@ -106,12 +55,11 @@ body::before{
 
 <body>
 
-<div class="heartbeat-bg"></div>
-
 <div class="container">
 
   <div id="text"></div>
 
+  <!--  HARD FIX (no animation, no fonts, no SVG) -->
   <div id="special"> </div>
 
   <div id="final"></div>
@@ -121,7 +69,6 @@ body::before{
 <script>
 
 const textEl = document.getElementById("text");
-const specialEl = document.getElementById("special");
 const finalEl = document.getElementById("final");
 
 const intro = [
@@ -153,45 +100,30 @@ function delay(ms){
   return new Promise(r => setTimeout(r, ms));
 }
 
-/* typing effect ONLY for English */
-async function showLines(lines, speed=30){
-
+async function show(lines){
   for(let line of lines){
-
-    textEl.innerHTML = "";
-
-    for(let char of line){
-      textEl.innerHTML += char;
-      await delay(speed);
-    }
-
-    await delay(700);
+    textEl.innerHTML = line;
+    await delay(800);
   }
 }
 
 async function start(){
 
-  await showLines(intro, 28);
-
-  document.body.classList.add("glitch");
-  await delay(800);
+  await show(intro);
 
   textEl.innerHTML = "";
 
-  specialEl.style.opacity = 1;
-
-  await delay(1200);
-
-  await showLines(middle, 28);
+  await show(middle);
 
   textEl.innerHTML = "";
-
-  finalEl.style.opacity = 1;
 
   for(let line of finalLines){
     finalEl.innerHTML += line + "<br/>";
     await delay(800);
   }
+
+  //  DEBUG CONFIRMATION
+  console.log("Arabic should be visible now:", document.getElementById("special").innerText);
 }
 
 start();
