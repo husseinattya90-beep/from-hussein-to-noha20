@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>moment</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
@@ -16,39 +16,38 @@ body{
   display:flex;
   justify-content:center;
   align-items:center;
-  font-family:Poppins;
+  font-family:'Poppins',sans-serif;
   color:white;
   background:#050505;
 }
 
-/* soft cinematic light */
 body::before{
   content:"";
   position:absolute;
   inset:0;
-  background: radial-gradient(circle at center,
-    rgba(255,255,255,0.05),
+  background:radial-gradient(circle at center,
+    rgba(255,255,255,.05),
     transparent 65%);
   pointer-events:none;
 }
 
-/* moving subtle glow */
 .heartbeat-bg{
   position:absolute;
   inset:-40%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255,255,255,0.015),
-    transparent
-  );
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(255,255,255,.015),
+      transparent
+    );
   animation:move 14s linear infinite;
   transform:rotate(8deg);
 }
 
 @keyframes move{
-  from{transform:translateX(-30%) rotate(8deg)}
-  to{transform:translateX(30%) rotate(8deg)}
+  from{transform:translateX(-30%) rotate(8deg);}
+  to{transform:translateX(30%) rotate(8deg);}
 }
 
 .container{
@@ -57,51 +56,46 @@ body::before{
   text-align:center;
 }
 
-/* 🔥 IMPORTANT FIX: fixed height prevents scroll */
 #text{
   height:60vh;
   display:flex;
   justify-content:center;
   align-items:center;
 
+  text-align:center;
+
   font-size:18px;
   line-height:2.2;
-  color:rgba(255,255,255,0.88);
-
-  text-align:center;
+  color:rgba(255,255,255,.88);
 
   overflow:hidden;
 }
 
-/* special word */
 #special{
-  font-family:Cairo;
+  font-family:'Cairo',sans-serif;
   font-size:58px;
-  margin-top:18px;
   opacity:0;
-  transition:1.6s ease;
-  color:rgba(255,255,255,0.92);
+  transition:1.8s ease;
+  color:rgba(255,255,255,.92);
 }
 
-/* final */
 #final{
-  margin-top:18px;
-  font-size:15px;
+  margin-top:20px;
   opacity:0;
-  color:rgba(255,255,255,0.55);
+  font-size:15px;
   line-height:1.9;
+  color:rgba(255,255,255,.55);
   transition:2s ease;
 }
 
-/* micro glitch */
 .glitch{
   animation:glitch .25s;
 }
 
 @keyframes glitch{
-  0%{transform:translate(0)}
-  50%{transform:translate(0.6px,0)}
-  100%{transform:translate(0)}
+  0%{transform:translate(0);}
+  50%{transform:translate(.6px,0);}
+  100%{transform:translate(0);}
 }
 
 </style>
@@ -114,7 +108,9 @@ body::before{
 <div class="container">
 
   <div id="text"></div>
-  <div id="special">حنين عليا</div>
+
+  <div id="special"> </div>
+
   <div id="final"></div>
 
 </div>
@@ -130,86 +126,102 @@ const intro = [
 "rest more...",
 "please stop being so hard on yourself...",
 "",
-"you really need to—"
+"you really need to�"
 ];
 
 const middle = [
 "and somehow...",
-"that was the only part I couldn’t move past.",
+"that was the only part I couldn�t move past.",
 "",
 "and honestly, I got a bit lost in my words after that...",
 "",
 "not because I was ignoring anything you said...",
-"but because that single phrase—'حنين عليا'—just hit differently.",
+"but because that single phrase�' '�just hit differently.",
 "",
-"it didn’t feel like a word… it felt like interruption.",
+"it didn�t feel like a word� it felt like interruption.",
 "",
 "it threw off what I was trying to say, in the middle of it.",
 "",
 "because when I truly care about someone...",
-"I don’t know how to pretend I’m okay",
+"I don�t know how to pretend I�m okay",
 "when I see you being too hard on yourself."
 ];
 
 const finalLines = [
-"this isn’t me ignoring anything you feel… it’s the opposite.",
-"it’s why I couldn’t even keep my words straight.",
+"this isn�t me ignoring anything you feel� it�s the opposite.",
+"it�s why I couldn�t even keep my words straight.",
 "because it genuinely mattered more than I expected."
 ];
 
-/* ===== helpers ===== */
-
 function delay(ms){
-  return new Promise(r => setTimeout(r, ms));
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-/* single line render (NO scroll, NO stacking) */
-async function showLines(lines, speed = 32){
+async function showLines(lines, speed){
 
-  for(let line of lines){
+  for(const line of lines){
 
-    textEl.innerHTML = ""; // 🔥 مهم: يمسح القديم
+    textEl.innerHTML = "";
 
-    for(let char of line){
+    for(const char of line){
+
       textEl.innerHTML += char;
-      await delay(speed);
+
+      if(
+        char === "." ||
+        char === "," ||
+        char === "�" ||
+        char === "�"
+      ){
+        await delay(speed + 300);
+      }else{
+        await delay(speed);
+      }
+
     }
 
-    await delay(650);
+    await delay(2200);
   }
+
 }
 
-/* final */
 async function showFinal(){
 
-  for(let line of finalLines){
+  for(const line of finalLines){
 
-    finalEl.innerHTML += line + "<br/>";
-    await delay(900);
+    finalEl.innerHTML += line + "<br>";
+
+    await delay(1800);
   }
+
 }
 
-/* main */
 async function start(){
 
-  await showLines(intro, 36);
+  await showLines(intro, 120);
 
   document.body.classList.add("glitch");
-  await delay(900);
+
+  await delay(1500);
 
   textEl.innerHTML = "";
 
-  await delay(900);
+  await delay(2500);
+
   specialEl.style.opacity = 1;
 
-  await delay(1200);
+  await delay(3500);
 
-  await showLines(middle, 30);
+  await showLines(middle, 105);
 
   textEl.innerHTML = "";
 
+  await delay(1500);
+
   finalEl.style.opacity = 1;
+
   await showFinal();
+
 }
 
 start();
