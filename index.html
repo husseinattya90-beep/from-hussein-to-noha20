@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>moment</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
@@ -16,38 +16,39 @@ body{
   display:flex;
   justify-content:center;
   align-items:center;
-  font-family:'Poppins',sans-serif;
+  font-family:Poppins;
   color:white;
   background:#050505;
 }
 
+/* soft cinematic light */
 body::before{
   content:"";
   position:absolute;
   inset:0;
-  background:radial-gradient(circle at center,
-    rgba(255,255,255,.05),
+  background: radial-gradient(circle at center,
+    rgba(255,255,255,0.05),
     transparent 65%);
   pointer-events:none;
 }
 
+/* moving subtle glow */
 .heartbeat-bg{
   position:absolute;
   inset:-40%;
-  background:
-    linear-gradient(
-      90deg,
-      transparent,
-      rgba(255,255,255,.015),
-      transparent
-    );
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,255,255,0.015),
+    transparent
+  );
   animation:move 14s linear infinite;
   transform:rotate(8deg);
 }
 
 @keyframes move{
-  from{transform:translateX(-30%) rotate(8deg);}
-  to{transform:translateX(30%) rotate(8deg);}
+  from{transform:translateX(-30%) rotate(8deg)}
+  to{transform:translateX(30%) rotate(8deg)}
 }
 
 .container{
@@ -56,46 +57,51 @@ body::before{
   text-align:center;
 }
 
+/*  IMPORTANT FIX: fixed height prevents scroll */
 #text{
   height:60vh;
   display:flex;
   justify-content:center;
   align-items:center;
 
-  text-align:center;
-
   font-size:18px;
   line-height:2.2;
-  color:rgba(255,255,255,.88);
+  color:rgba(255,255,255,0.88);
+
+  text-align:center;
 
   overflow:hidden;
 }
 
+/* special word */
 #special{
-  font-family:'Cairo',sans-serif;
+  font-family:Cairo;
   font-size:58px;
+  margin-top:18px;
   opacity:0;
-  transition:1.8s ease;
-  color:rgba(255,255,255,.92);
+  transition:1.6s ease;
+  color:rgba(255,255,255,0.92);
 }
 
+/* final */
 #final{
-  margin-top:20px;
-  opacity:0;
+  margin-top:18px;
   font-size:15px;
+  opacity:0;
+  color:rgba(255,255,255,0.55);
   line-height:1.9;
-  color:rgba(255,255,255,.55);
   transition:2s ease;
 }
 
+/* micro glitch */
 .glitch{
   animation:glitch .25s;
 }
 
 @keyframes glitch{
-  0%{transform:translate(0);}
-  50%{transform:translate(.6px,0);}
-  100%{transform:translate(0);}
+  0%{transform:translate(0)}
+  50%{transform:translate(0.6px,0)}
+  100%{transform:translate(0)}
 }
 
 </style>
@@ -108,9 +114,7 @@ body::before{
 <div class="container">
 
   <div id="text"></div>
-
   <div id="special"> </div>
-
   <div id="final"></div>
 
 </div>
@@ -153,75 +157,59 @@ const finalLines = [
 "because it genuinely mattered more than I expected."
 ];
 
+/* ===== helpers ===== */
+
 function delay(ms){
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise(r => setTimeout(r, ms));
 }
 
-async function showLines(lines, speed){
+/* single line render (NO scroll, NO stacking) */
+async function showLines(lines, speed = 32){
 
-  for(const line of lines){
+  for(let line of lines){
 
-    textEl.innerHTML = "";
+    textEl.innerHTML = ""; //  :  
 
-    for(const char of line){
-
+    for(let char of line){
       textEl.innerHTML += char;
-
-      if(
-        char === "." ||
-        char === "," ||
-        char === "…" ||
-        char === "—"
-      ){
-        await delay(speed + 300);
-      }else{
-        await delay(speed);
-      }
-
+      await delay(speed);
     }
 
-    await delay(2200);
+    await delay(650);
   }
-
 }
 
+/* final */
 async function showFinal(){
 
-  for(const line of finalLines){
+  for(let line of finalLines){
 
-    finalEl.innerHTML += line + "<br>";
-
-    await delay(1800);
+    finalEl.innerHTML += line + "<br/>";
+    await delay(900);
   }
-
 }
 
+/* main */
 async function start(){
 
-  await showLines(intro, 120);
+  await showLines(intro, 36);
 
   document.body.classList.add("glitch");
-
-  await delay(1500);
+  await delay(900);
 
   textEl.innerHTML = "";
 
-  await delay(2500);
-
+  await delay(900);
   specialEl.style.opacity = 1;
 
-  await delay(3500);
+  await delay(1200);
 
-  await showLines(middle, 105);
+  await showLines(middle, 30);
 
   textEl.innerHTML = "";
 
-  await delay(1500);
-
   finalEl.style.opacity = 1;
-
   await showFinal();
-
 }
 
 start();
