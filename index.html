@@ -15,14 +15,12 @@ body{
   justify-content:center;
   align-items:center;
 
-  /*  :     */
   font-family: "Segoe UI", Tahoma, Arial, sans-serif;
-
   color:white;
   background:#050505;
 }
 
-/* background */
+/* soft glow background */
 body::before{
   content:"";
   position:absolute;
@@ -57,6 +55,7 @@ body::before{
   text-align:center;
 }
 
+/* main text */
 #text{
   height:60vh;
   display:flex;
@@ -65,20 +64,23 @@ body::before{
 
   font-size:18px;
   line-height:2.2;
+  color:rgba(255,255,255,0.9);
+  overflow:hidden;
 }
 
+/* fixed Arabic word */
 #special{
   font-size:58px;
   margin-top:18px;
   opacity:0;
   transition:1.6s ease;
 
-  /*    */
   font-family: "Segoe UI", Tahoma, Arial, sans-serif;
   direction: rtl;
   unicode-bidi: plaintext;
 }
 
+/* final text */
 #final{
   margin-top:18px;
   font-size:15px;
@@ -136,9 +138,7 @@ const middle = [
 "and honestly, I got a bit lost in my words after that...",
 "",
 "not because I was ignoring anything you said...",
-"but because that single phrase—",
-" ",
-"just hit differently.",
+"but because that single phrase—' '—just hit differently.",
 "",
 "it didn’t feel like a word… it felt like interruption."
 ];
@@ -153,27 +153,19 @@ function delay(ms){
   return new Promise(r => setTimeout(r, ms));
 }
 
-/*  FIX:      */
+/* typing effect ONLY for English */
 async function showLines(lines, speed=30){
 
   for(let line of lines){
 
     textEl.innerHTML = "";
 
-    //    typing
-    if (/[\u0600-\u06FF]/.test(line)) {
-      textEl.innerHTML = line;
-      await delay(900);
-      continue;
-    }
-
-    //   typing effect
     for(let char of line){
       textEl.innerHTML += char;
       await delay(speed);
     }
 
-    await delay(600);
+    await delay(700);
   }
 }
 
