@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>moment</title>
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
+
 <style>
 
 body{
@@ -15,9 +20,20 @@ body{
   justify-content:center;
   align-items:center;
 
-  font-family: system-ui, Arial, sans-serif;
+  font-family: Poppins, Arial, sans-serif;
   color:white;
   background:#050505;
+}
+
+/* background glow */
+body::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background: radial-gradient(circle at center,
+    rgba(255,255,255,0.05),
+    transparent 65%);
+  pointer-events:none;
 }
 
 .heartbeat-bg{
@@ -44,29 +60,46 @@ body{
   text-align:center;
 }
 
+/* main text */
 #text{
   height:60vh;
   display:flex;
   justify-content:center;
   align-items:center;
+
   font-size:18px;
   line-height:2.2;
+  color:rgba(255,255,255,0.9);
+  overflow:hidden;
 }
 
+/*  FIXED ARABIC WORD (always safe) */
 #special{
+  font-family: "Cairo", "Segoe UI", Tahoma, Arial, sans-serif;
   font-size:58px;
+  margin-top:20px;
+
   opacity:0;
-  transition:1.5s ease;
-  font-family: Tahoma, Arial, sans-serif;
+  transform: translateY(10px);
+  transition: 1.2s ease;
+
+  direction: rtl;
+  unicode-bidi: plaintext;
+
+  color: rgba(255,255,255,0.95);
 }
 
+/* final text */
 #final{
-  margin-top:20px;
+  margin-top:18px;
   font-size:15px;
   opacity:0;
+  color:rgba(255,255,255,0.6);
+  line-height:1.9;
   transition:2s ease;
 }
 
+/* glitch */
 .glitch{
   animation:glitch .25s;
 }
@@ -85,9 +118,14 @@ body{
 <div class="heartbeat-bg"></div>
 
 <div class="container">
+
   <div id="text"></div>
+
+  <!--  FIXED: Arabic is completely isolated -->
   <div id="special"> </div>
+
   <div id="final"></div>
+
 </div>
 
 <script>
@@ -106,10 +144,13 @@ const intro = [
 const middle = [
 "and somehow...",
 "that was the only part I couldn’t move past.",
+"",
 "and honestly, I got a bit lost in my words after that...",
+"",
 "not because I was ignoring anything you said...",
 "but because that single phrase—",
-" ",
+"just hit differently.",
+"",
 "it didn’t feel like a word… it felt like interruption."
 ];
 
@@ -123,48 +164,42 @@ function delay(ms){
   return new Promise(r => setTimeout(r, ms));
 }
 
-/*  FIX: Arabic is rendered as full line */
+/* typing effect (English only) */
 async function showLines(lines, speed=30){
 
   for(let line of lines){
 
     textEl.innerHTML = "";
 
-    if (/[\u0600-\u06FF]/.test(line)) {
-      textEl.innerHTML = line; // Arabic safe render
-      await delay(900);
-      continue;
-    }
-
     for(let char of line){
       textEl.innerHTML += char;
       await delay(speed);
     }
 
-    await delay(600);
+    await delay(700);
   }
 }
 
 async function start(){
 
-  for(let line of intro){
-    textEl.innerHTML = line;
-    await delay(800);
-  }
+  await showLines(intro, 28);
 
   document.body.classList.add("glitch");
   await delay(800);
 
-  for(let line of middle){
-    textEl.innerHTML = line;
-    await delay(800);
-  }
+  textEl.innerHTML = "";
+
+  /*  FIX: show Arabic safely as standalone element */
+  specialEl.style.opacity = 1;
+  specialEl.style.transform = "translateY(0)";
+
+  await delay(1500);
+
+  await showLines(middle, 28);
 
   textEl.innerHTML = "";
 
-  specialEl.style.opacity = 1;
-
-  await delay(1200);
+  finalEl.style.opacity = 1;
 
   for(let line of finalLines){
     finalEl.innerHTML += line + "<br/>";
