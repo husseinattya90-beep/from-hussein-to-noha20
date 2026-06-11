@@ -5,7 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>moment</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600&family=Noto+Sans+Arabic:wght@300;400;600&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
 
 <style>
 
@@ -16,12 +19,14 @@ body{
   display:flex;
   justify-content:center;
   align-items:center;
-  font-family:Poppins;
+
+  font-family: "Cairo","Noto Sans Arabic","Poppins",sans-serif;
+
   color:white;
   background:#050505;
 }
 
-/* soft cinematic light */
+/* background */
 body::before{
   content:"";
   position:absolute;
@@ -32,7 +37,6 @@ body::before{
   pointer-events:none;
 }
 
-/* moving subtle glow */
 .heartbeat-bg{
   position:absolute;
   inset:-40%;
@@ -57,7 +61,7 @@ body::before{
   text-align:center;
 }
 
-/*  IMPORTANT FIX: fixed height prevents scroll */
+/* text */
 #text{
   height:60vh;
   display:flex;
@@ -66,34 +70,35 @@ body::before{
 
   font-size:18px;
   line-height:2.2;
-  color:rgba(255,255,255,0.88);
 
+  color:rgba(255,255,255,0.9);
   text-align:center;
 
   overflow:hidden;
+
+  font-family:"Cairo","Noto Sans Arabic",sans-serif;
 }
 
-/* special word */
 #special{
-  font-family:Cairo;
   font-size:58px;
   margin-top:18px;
   opacity:0;
   transition:1.6s ease;
-  color:rgba(255,255,255,0.92);
+
+  font-family:"Cairo","Noto Sans Arabic",sans-serif;
 }
 
-/* final */
 #final{
   margin-top:18px;
   font-size:15px;
   opacity:0;
-  color:rgba(255,255,255,0.55);
+  color:rgba(255,255,255,0.6);
   line-height:1.9;
   transition:2s ease;
+
+  font-family:"Cairo","Noto Sans Arabic",sans-serif;
 }
 
-/* micro glitch */
 .glitch{
   animation:glitch .25s;
 }
@@ -112,11 +117,9 @@ body::before{
 <div class="heartbeat-bg"></div>
 
 <div class="container">
-
   <div id="text"></div>
   <div id="special"> </div>
   <div id="final"></div>
-
 </div>
 
 <script>
@@ -142,13 +145,7 @@ const middle = [
 "not because I was ignoring anything you said...",
 "but because that single phrase—' '—just hit differently.",
 "",
-"it didn’t feel like a word… it felt like interruption.",
-"",
-"it threw off what I was trying to say, in the middle of it.",
-"",
-"because when I truly care about someone...",
-"I don’t know how to pretend I’m okay",
-"when I see you being too hard on yourself."
+"it didn’t feel like a word… it felt like interruption."
 ];
 
 const finalLines = [
@@ -157,54 +154,55 @@ const finalLines = [
 "because it genuinely mattered more than I expected."
 ];
 
-/* ===== helpers ===== */
-
 function delay(ms){
   return new Promise(r => setTimeout(r, ms));
 }
 
-/* single line render (NO scroll, NO stacking) */
-async function showLines(lines, speed = 32){
+/*  IMPORTANT: wait for fonts */
+async function waitFonts(){
+  if (document.fonts && document.fonts.ready) {
+    await document.fonts.ready;
+  }
+}
+
+async function showLines(lines, speed=35){
 
   for(let line of lines){
 
-    textEl.innerHTML = ""; //  :  
+    textEl.innerHTML = "";
 
     for(let char of line){
       textEl.innerHTML += char;
       await delay(speed);
     }
 
-    await delay(650);
+    await delay(600);
   }
 }
 
-/* final */
 async function showFinal(){
-
   for(let line of finalLines){
-
     finalEl.innerHTML += line + "<br/>";
-    await delay(900);
+    await delay(800);
   }
 }
 
-/* main */
 async function start(){
 
-  await showLines(intro, 36);
+  await waitFonts(); //   
+
+  await showLines(intro, 30);
 
   document.body.classList.add("glitch");
-  await delay(900);
+  await delay(800);
 
   textEl.innerHTML = "";
 
-  await delay(900);
   specialEl.style.opacity = 1;
 
   await delay(1200);
 
-  await showLines(middle, 30);
+  await showLines(middle, 28);
 
   textEl.innerHTML = "";
 
